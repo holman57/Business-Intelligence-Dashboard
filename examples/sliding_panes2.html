@@ -1,0 +1,74 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+    $(document).ready(function() {
+        var options = {};
+        $("#c").hide();
+        $("#d").hide();
+        $("#a").click(function() {
+            $("#c").toggle("slide", options, 500);
+            $("#d").hide();
+        });
+        $("#b").click(function() {
+            $("#d").toggle("slide", options, 500);
+            $("#c").hide();
+        });
+    });
+    </script>
+    <style>
+        nav {
+            float:left;
+            max-width:300px;
+            width:300px;
+            margin-top:100px;
+        }
+        article {
+            margin-top:100px;
+            height:100px;
+        }
+        #c, #d {
+            padding:10px;
+            border:1px solid olive;
+            margin-left:100px;
+            margin-top:100px;
+            background-color:blue;
+        }
+        button {
+            border:2px solid blue;
+            background-color:white;
+            color:black;
+            padding:10px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <center>hi</center>
+</header>
+<nav>
+    <button id="a">Register 1</button>
+    <br>
+    <br>
+    <br>
+    <br>
+    <button id="b">Register 2</button>
+</nav>
+
+<article id="c">
+    <form>
+        <label>User name:</label>
+        <input type="text" name="123" value="something"/>
+        <br>
+        <br>
+        <label>Password:</label>
+        <input type="text" name="456" value="something"/>
+    </form>
+</article>
+<article id="d">
+    <p>Hi</p>
+</article>
+</body>
+</html>
