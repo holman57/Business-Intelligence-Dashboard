@@ -11,7 +11,10 @@
     $(this).hide("slide", { direction: "left" }, 1000);
     $(this).show("slide", { direction: "left" }, 1000);
 
+## Datasets
 
+1. `plotly.data.gapminder()` https://plotly.com/python-api-reference/generated/plotly.express.data.html
+2. `data\PovStatsData.csv` Poverty and Equity Database https://www.kaggle.com/datasets/theworldbank/poverty-and-equity-database
 
 
 
