@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JQuery Graph</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script type="text/javascript">
+      // JQuery Graph
+      // https://canvasjs.com/jquery-charts/
+      window.onload = function () {
+        var options = {
+          title: {
+            text: "Desktop OS Market Share",
+          },
+          subtitles: [
+            {
+              text: "As of November, 2017",
+            },
+          ],
+          theme: "light2",
+          animationEnabled: true,
+          data: [
+            {
+              type: "pie",
+              startAngle: 40,
+              toolTipContent: "<b>{label}</b>: {y}%",
+              showInLegend: "true",
+              legendText: "{label}",
+              indexLabelFontSize: 16,
+              indexLabel: "{label} - {y}%",
+              dataPoints: [
+                { y: 48.36, label: "Windows 7" },
+                { y: 26.85, label: "Windows 10" },
+                { y: 1.49, label: "Windows 8" },
+                { y: 6.98, label: "Windows XP" },
+                { y: 6.53, label: "Windows 8.1" },
+                { y: 2.45, label: "Linux" },
+                { y: 3.32, label: "Mac OS X 10.12" },
+                { y: 4.03, label: "Others" },
+              ],
+            },
+          ],
+        };
+        $("#chartContainer").CanvasJSChart(options);
+      };
+    </script>
+  </head>
+  <body>
+    <div id="chartContainer" style="height: 370px; width: 100%"></div>
+    <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+    <script src="https://cdn.canvasjs.com/jquery.canvasjs.min.js"></script>
+  </body>
+</html>
