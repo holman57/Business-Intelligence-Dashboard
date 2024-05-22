@@ -11,3 +11,6 @@
 
     $(this).hide("slide", { direction: "left" }, 1000);
     $(this).show("slide", { direction: "left" }, 1000);
+
+- https://github.com/flot/flot/blob/master/API.md
+- https://omnipotent.net/jquery.sparkline/#s-about
