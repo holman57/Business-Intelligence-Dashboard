@@ -1,57 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>JQuery Graph</title>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" 
+    "http://www.w3.org/TR/html4/strict.dtd">
+<head>
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script type="text/javascript" src="jquery.sparkline.min.js"></script>
+
     <script type="text/javascript">
-      // JQuery Graph
-      // https://canvasjs.com/jquery-charts/pie-chart-index-data-label-inside/
-      window.onload = function () {
-        var options = {
-          exportEnabled: true,
-          animationEnabled: true,
-          title: {
-            text: "Accounting",
-          },
-          legend: {
-            horizontalAlign: "right",
-            verticalAlign: "center",
-          },
-          data: [
-            {
-              type: "pie",
-              showInLegend: true,
-              toolTipContent: "<b>{name}</b>: ${y} (#percent%)",
-              indexLabel: "{name}",
-              legendText: "{name} (#percent%)",
-              indexLabelPlacement: "inside",
-              dataPoints: [
-                { y: 6566.4, name: "Housing" },
-                { y: 2599.2, name: "Food" },
-                { y: 1231.2, name: "Fun" },
-                { y: 1368, name: "Clothes" },
-                { y: 684, name: "Others" },
-                { y: 1231.2, name: "Utilities" },
-              ],
-            },
-          ],
-        };
-        $("#chartContainer").CanvasJSChart(options);
-      };
+    $(function() {
+        /** This code runs when everything has been loaded on the page */
+        /* Inline sparklines take their values from the contents of the tag */
+        $('.inlinesparkline').sparkline(); 
+
+        /* Sparklines can also take their values from the first argument 
+        passed to the sparkline() function */
+        var myvalues = [10,8,5,7,4,4,1];
+        $('.dynamicsparkline').sparkline(myvalues);
+
+        /* The second argument gives options such as chart type */
+        $('.dynamicbar').sparkline(myvalues, {type: 'bar', barColor: 'green'} );
+
+        /* Use 'html' instead of an array of values to pass options 
+        to a sparkline with data in the tag */
+        $('.inlinebar').sparkline('html', {type: 'bar', barColor: 'red'} );
+    });
     </script>
-  </head>
-  <body>
-    <div id="chartContainer" style="height: 370px; width: 100%"></div>
-    <script
-      type="text/javascript"
-      src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://cdn.canvasjs.com/jquery.canvasjs.min.js"
-    ></script>
-  </body>
+</head>
+<body>
+
+  <p>
+  Inline Sparkline: <span class="inlinesparkline">1,4,4,7,5,9,10</span>.
+  </p>
+  <p>
+  Sparkline with dynamic data: <span class="dynamicsparkline">Loading..</span>
+  </p>
+  <p>
+  Bar chart with dynamic data: <span class="dynamicbar">Loading..</span>
+  </p>
+  <p>
+  Bar chart with inline data: <span class="inlinebar">1,3,4,5,3,5</span>
+  </p>
+
+</body>
 </html>
