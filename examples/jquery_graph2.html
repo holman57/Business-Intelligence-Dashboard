@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!-- https://stackoverflow.com/questions/30148902/how-to-make-a-graph-in-javascript-jquery-without-graph-libraries -->
+<html>
+  <body>
+    <svg height="150" width="150" style="border: 1px solid black">
+      <!-- This is the background lines -->
+      <polyline
+        points="30,0 30,201 60,201 60,-1 90,-1 90,201 120,201 120,-1 150,-1 150,201"
+        stroke="grey"
+        stroke-width="1"
+        fill="none"
+      />
+
+      <!-- This is the chart data -->
+
+      <polyline
+        stroke-linejoin="round"
+        points="0,105 30,100 60,80 90,75 120,60 150,69"
+        stroke="black"
+        stroke-width="5"
+        fill="none"
+        stroke-opacity="1"
+        stroke-linecap="round"
+      />
+    </svg>
+  </body>
+</html>
