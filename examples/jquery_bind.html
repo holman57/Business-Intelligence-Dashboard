@@ -1,16 +1,68 @@
 <!DOCTYPE html>
     <head>
         <title>JQuery Bind</title>
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="jquery-3.5.1.min.js"></script>
         <script type="text/javascript" src="jquery.sparkline.min.js"></script>
+        <script type="text/javascript">
+            function r(min, max) {
+                const ceil = Math.ceil(min);
+                const floor = Math.floor(max);
+                return Math.floor(Math.random() * (floor - ceil + 1) + ceil);
+            }
+            function strip(string) {
+                return string.replace(/^\s+|\s+$|\n/g, '');
+            }
+        </script>
     </head>
     <body>
-        <div id="sparkline" class="inlinesparkline">2,2,3</div>
+        <ul id="thing">
+            <li>One</li>
+            <li>Two</li>
+            <li>Three</li>
+            <li>Four</li>
+            <li>Five</li>
+            <li>Six</li>
+            <li>Seven</li>
+            <li>Eight</li>
+            <li>Nine</li>
+            <li>Ten</li>
+            <li>Eleven</li>
+            <li>Twelve</li>
+            <li>Thirteen</li>
+            <li>Fourteen</li>
+            <li>Fifteen</li>
+            <li>Sixteen</li>
+        </ul>
+        <!-- <div id="sparkline" class="inlinesparkline"></div> -->
         <script>
-            $("#sparkline").sparkline([25,75], {
-                type: 'pie',
-                width: '200',
-                height: '200'
+            list_ref = $("#thing li");
+            list_ref.on({
+                mouseenter: function () {
+                    $(this).css("background-color", "lightblue");
+                },
+                mouseleave: function () {
+                    $(this).css("background-color", "white");
+                }
+            });
+            list_ref.each(function(index, value) {
+                var d = document.createElement('div');
+                d.className = 'dyn';
+                d.id = `dyn${index}`;
+                d.style = 'margin-left: 5%';
+                d.style = 'padding: 0px';
+                d.style = 'display: flex';
+                list_ref[index].appendChild(d);
+                d.innerHTML = `I dynamically added a child div the for list item ${strip(list_ref[index].innerHTML)}`;
+                var s = document.createElement('div');
+                s.className = 'dyn sparkline';
+                s.id = `s${index}`;
+                s.style = 'display: flex';
+                list_ref[index].appendChild(s);
+                $(`#s${index}`).sparkline([r(0, 100), r(0, 100)], {
+                    type: 'pie',
+                    width: '20',
+                    height: '20'
+                });
             });
         </script>
     </body>
