@@ -15,7 +15,22 @@ def flask_app():
     df = pd.read_sql(sql, ganymede_conn)
     print(df)
     ganymede_conn.close()
-    return df.to_html() + "<div id='context'></div>"
+    return ("<html>"
+            "<head>"
+            "<style>"
+            "#dash_app {"
+            "   width: -webkit-fill-available;"
+            "   height: -webkit-fill-available;"
+            "   border: none;"
+            "}"
+            "</style>"
+            "</head>"
+            "<body>"
+            + df.to_html() +
+            "<iframe id='dash_app' src='http://127.0.0.1:8050/' title='dash iframe injection'></iframe>"
+            "</body>"
+            "</head>"
+            "</html>")
 
 
 if __name__ == "__main__":
