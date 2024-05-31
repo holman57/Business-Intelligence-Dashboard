@@ -1,6 +1,9 @@
 from flask import Flask
 import pyodbc
 import pandas as pd
+from IPython.display import HTML
+
+# https://panel.holoviz.org/
 
 
 app = Flask(__name__)
@@ -26,7 +29,7 @@ def flask_app():
             "</style>"
             "</head>"
             "<body>"
-            + df.to_html() +
+            + df.to_html(classes='table table-stripped') +
             "<iframe id='dash_app' src='http://127.0.0.1:8050/' title='dash iframe injection'></iframe>"
             "</body>"
             "</head>"
