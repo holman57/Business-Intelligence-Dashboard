@@ -1,20 +1,22 @@
 import pandas as pd
 import dash
-import dash_table
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dash_table
+from dash import dcc
+from dash import html
 from dash.dependencies import Input, Output
-import pyodbc
+import urllib
+import sqlalchemy as sa
 
 # https://stackoverflow.com/questions/60273619/show-pandas-dataframe-in-webpage-and-dynamically-filter-using-dash
 
 
 print(conn_string)
-ganymede_conn = pyodbc.connect(conn_string)
+params = urllib.parse.quote_plus(conn_string)
+ganymede_engine = sa.create_engine(f"mssql+pyodbc:///?odbc_connect={params}")
 sql = "SELECT TOP (100) * FROM [dbo].[orders];"
-df = pd.read_sql(sql, ganymede_conn)
+df = pd.read_sql(sql, ganymede_engine)
 
-PAGE_SIZE = 10
+PAGE_SIZE = 15
 app = dash.Dash(__name__)
 
 app.layout = html.Div([
@@ -27,7 +29,6 @@ app.layout = html.Div([
         page_current=0,
         page_size=PAGE_SIZE,
         page_action='custom',
-
         sort_action='custom',
         sort_mode='single',
         sort_by=[]
@@ -58,4 +59,4 @@ def update_table(page_current, page_size, sort_by, filter_string):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server()
