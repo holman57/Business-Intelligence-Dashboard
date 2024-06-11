@@ -6,6 +6,8 @@ from dateutil.relativedelta import relativedelta
 import sqlalchemy as sa
 import urllib
 import plotly.express as px
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 # https://pandas.pydata.org/docs/user_guide/timeseries.html#timeseries-offset-aliases
 # https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
@@ -47,15 +49,15 @@ download_component1 = dcc.Download()
 download_component2 = dcc.Download()
 app.layout = html.Div([
     html.H2("Example 17", style={"marginBottom": 20}),
-    dcc.Graph(
-        id='histogram-interaction'
-    ),
+    dcc.Graph(id='histogram-interaction'),
     range_slider,
     download_component1,
     download_component2,
     download_csv,
     download_xlsx,
     dtable,
+    dcc.Graph(id='pie-interaction'),
+
     # dcc.Interval(
     #     id='interval-component',
     #     interval=1000,
@@ -65,15 +67,33 @@ app.layout = html.Div([
 
 
 @app.callback([Output(dtable, "data"),
-               Output('histogram-interaction', 'figure')
+               Output('histogram-interaction', 'figure'),
+               Output('pie-interaction', 'figure')
                ], Input(range_slider, "value"))
 def update_table(slider_value):
     if not slider_value:
         return dash.no_update
     dff = df[df["OrderDate"].between(dates[slider_value[0]], ticks[slider_value[1]])]
-    dfc = dff["CustomerID"].value_counts().rename_axis('CustomerID').reset_index(name='Frequency')
-    fig = px.bar(dfc, x="CustomerID", y="Frequency", title="Histogram")
-    return dff.to_dict("records"), fig
+    dfc = dff["ShipCountry"].value_counts().rename_axis('ShipCountry').reset_index(name='Frequency')
+    dfs = dff["ShipVia"].value_counts().rename_axis('ShipVia').reset_index(name='Frequency')
+    fig1 = px.bar(dfc, x="ShipCountry", y="Frequency", title="Histogram")
+    # fig2 = go.Figure(data=[go.Pie(labels=dfc["Frequency"], values=dfc["CustomerID"], hole=.3)])
+    # fig2 = px.pie(dfc, values=dfc["Frequency"], names=dfc["ShipCountry"])
+    # fig3 = px.pie(dfs, values=dfs["Frequency"], names=dfs["ShipVia"])
+    fig2 = make_subplots(rows=1, cols=2, specs=[[{"type": "pie"}, {"type": "pie"}]])
+    fig2.add_trace(go.Pie(
+            values=dfc["Frequency"],
+            labels=dfc["ShipCountry"],
+            # domain=dict(x=[0, 0.5]),
+            name="Country"),
+        row=1, col=2)
+    fig2.add_trace(go.Pie(
+            values=dfs["Frequency"],
+            labels=dfs["ShipVia"],
+            # domain=dict(x=[0.5, 1.0]),
+            name="ShipVia"),
+        row=1, col=1)
+    return dff.to_dict("records"), fig1, fig2
 
 
 # @app.callback(Output('histogram-interaction', 'figure'),
