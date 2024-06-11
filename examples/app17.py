@@ -5,6 +5,7 @@ from dash import Dash, dash_table, dcc, html, Input, Output, State
 from dateutil.relativedelta import relativedelta
 import sqlalchemy as sa
 import urllib
+import plotly.express as px
 
 # https://pandas.pydata.org/docs/user_guide/timeseries.html#timeseries-offset-aliases
 # https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
@@ -14,7 +15,7 @@ import urllib
 print(conn_string)
 ganymede_conn = urllib.parse.quote_plus(conn_string)
 engine = sa.create_engine(f"mssql+pyodbc:///?odbc_connect={ganymede_conn}")
-sql = "SELECT TOP (100) * FROM [Orders] ORDER BY NEWID();"
+sql = "SELECT TOP (1000) * FROM [Orders] ORDER BY NEWID();"
 df = pd.read_sql(sql, engine)
 timestamps = [x for x in sorted(df["OrderDate"])]
 start = timestamps[0]
@@ -25,10 +26,11 @@ end_date = (pd.to_datetime(str(np.datetime64(f'{end.year}-{end.month:02d}-01')))
 dates = pd.date_range(start=start_date, end=end_date, freq='MS')
 ticks = [str(date.strftime('%b %y')) for date in dates]
 app = Dash(__name__)
-range_slider = dcc.RangeSlider(min=0, max=len(ticks) - 1,
-                               step=None,
-                               marks={i: x for i, x in enumerate(ticks)},
-                               value=[0, len(ticks) - 1])
+range_slider = dcc.RangeSlider(
+    min=0, max=len(ticks) - 1,
+    step=None,
+    marks={i: x for i, x in enumerate(ticks)},
+    value=[0, len(ticks) - 1])
 dtable = dash_table.DataTable(
     columns=[{"name": i, "id": i} for i in sorted(df.columns)],
     sort_action="native",
@@ -45,20 +47,42 @@ download_component1 = dcc.Download()
 download_component2 = dcc.Download()
 app.layout = html.Div([
     html.H2("Example 17", style={"marginBottom": 20}),
+    dcc.Graph(
+        id='histogram-interaction'
+    ),
+    range_slider,
     download_component1,
     download_component2,
-    range_slider,
     download_csv,
     download_xlsx,
-    dtable])
+    dtable,
+    # dcc.Interval(
+    #     id='interval-component',
+    #     interval=1000,
+    #     n_intervals=0
+    # )
+])
 
 
-@app.callback(Output(dtable, "data"), Input(range_slider, "value"))
+@app.callback([Output(dtable, "data"),
+               Output('histogram-interaction', 'figure')
+               ], Input(range_slider, "value"))
 def update_table(slider_value):
     if not slider_value:
         return dash.no_update
-    dff = df[df["OrderDate"].between(ticks[slider_value[0]], ticks[slider_value[1]])]
-    return dff.to_dict("records")
+    dff = df[df["OrderDate"].between(dates[slider_value[0]], ticks[slider_value[1]])]
+    dfc = dff["CustomerID"].value_counts().rename_axis('CustomerID').reset_index(name='Frequency')
+    fig = px.bar(dfc, x="CustomerID", y="Frequency", title="Histogram")
+    return dff.to_dict("records"), fig
+
+
+# @app.callback(Output('histogram-interaction', 'figure'),
+#               [Input('interval-component', 'n_intervals'),
+#                Input(range_slider, "value")])
+# def update_graph_live(n_intervals, slider_value):
+#     dfc = df[df["OrderDate"].between(dates[slider_value[0]], ticks[slider_value[1]])]["CustomerID"].value_counts().rename_axis('CustomerID').reset_index(name='Frequency')
+#     fig = px.bar(dfc, x="CustomerID", y="Frequency", title="Histogram")
+#     return fig
 
 
 @app.callback(
