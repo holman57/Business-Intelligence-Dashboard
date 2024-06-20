@@ -12,7 +12,6 @@ app = Flask(__name__)
 @app.route('/')
 def flask_app():
 
-    print(conn_string)
     ganymede_conn = pyodbc.connect(conn_string)
     sql = "SELECT TOP (3) * FROM [dbo].[orders];"
     df = pd.read_sql(sql, ganymede_conn)

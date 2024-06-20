@@ -13,12 +13,16 @@ from plotly.subplots import make_subplots
 # https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
 
 
-
 print(conn_string)
 ganymede_conn = urllib.parse.quote_plus(conn_string)
 engine = sa.create_engine(f"mssql+pyodbc:///?odbc_connect={ganymede_conn}")
 sql = "SELECT TOP (1000) * FROM [Orders] ORDER BY NEWID();"
 df = pd.read_sql(sql, engine)
+orders_by_country = df["ShipCountry"].value_counts()
+countries = pd.unique(df["ShipCountry"])
+orders_by_customer = df["CustomerID"].value_counts()
+
+
 timestamps = [x for x in sorted(df["OrderDate"])]
 start = timestamps[0]
 end = timestamps[-1]
