@@ -13,12 +13,42 @@ from plotly.subplots import make_subplots
 # https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
 
 
-
 print(conn_string)
 ganymede_conn = urllib.parse.quote_plus(conn_string)
 engine = sa.create_engine(f"mssql+pyodbc:///?odbc_connect={ganymede_conn}")
-sql = "SELECT TOP (1000) * FROM [Orders] ORDER BY NEWID();"
+sql = """
+    SELECT TOP (1000) * 
+    FROM [Orders] 
+    WHERE [OrderDate] BETWEEN '1997-01-01' AND '1997-12-31'
+    ORDER BY NEWID();
+"""
 df = pd.read_sql(sql, engine)
+orders_total = df.pivot_table(index='OrderDate', columns='ShipCountry', values='Freight').sum()
+order_count = df['ShipCountry'].value_counts()
+customer_count = df.pivot_table(index='OrderDate', columns='ShipCountry', values='CustomerID', aggfunc=len, fill_value=0).sum()
+df['ShipTime'] = df['ShippedDate'] - df['OrderDate']
+order_time = df.pivot_table(index='OrderDate', columns='ShipCountry', values='ShipTime').sum()
+subset = df.loc[(df['ShipRegion'].isin(['SP', 'ID', 'RJ', 'OR', 'WA'])) & (df['ShipVia'] > 1)]
+subset_ShipViaSP_total = subset.pivot_table(index='OrderDate', columns='ShipCountry', values='Freight').sum()
+orders_total.name = "Orders Total"
+order_count.name = "Orders"
+customer_count.name = "Customers"
+order_time.name = "Processing Time"
+subset_ShipViaSP_total.name = "VIP Orders"
+derived_data = pd.concat([
+    orders_total,
+    order_count,
+    customer_count,
+    order_time,
+    subset_ShipViaSP_total
+], axis=1).reset_index().T.reset_index()
+cols = derived_data.iloc[0]
+derived_data = derived_data[1:]
+derived_data.columns = cols
+# cols.insert(0, cols.pop(cols.index('index')))
+# derived_data = derived_data.loc[:, cols]
+# derived_data.rename(columns={"index": ""})
+
 timestamps = [x for x in sorted(df["OrderDate"])]
 start = timestamps[0]
 end = timestamps[-1]
@@ -33,6 +63,11 @@ range_slider = dcc.RangeSlider(
     step=None,
     marks={i: x for i, x in enumerate(ticks)},
     value=[0, len(ticks) - 1])
+derived_table = dash_table.DataTable(
+    derived_data.to_dict('records'),
+    columns=[{"name": i, "id": i} for i in list(derived_data)],
+    style_table={"overflowX": "auto"}
+)
 dtable = dash_table.DataTable(
     columns=[{"name": i, "id": i} for i in sorted(df.columns)],
     sort_action="native",
@@ -42,6 +77,7 @@ dtable = dash_table.DataTable(
     column_selectable="single",
     page_action="native",
     page_size=10,
+    style_cell={"textAlign": "left"},
     style_table={"overflowX": "auto"})
 download_csv = html.Button("Export csv", style={"paddingTop": 5, "paddingBottom": 5, "margin": 5})
 download_xlsx = html.Button("Export xlsx", style={"paddingTop": 5, "paddingBottom": 5, "margin": 5})
@@ -55,6 +91,7 @@ app.layout = html.Div([
     download_component2,
     download_csv,
     download_xlsx,
+    derived_table,
     dtable,
     dcc.Graph(id='pie-interaction'),
 

@@ -1,5 +1,29 @@
 # Dashboard
 
+- https://pandas.pydata.org/pandas-docs/version/1.3.1/user_guide/style.html
+
+```python
+from pandas.io.formats.style import Styler
+from IPython.display import HTML
+import re
+
+html = Styler(df, uuid_len=0, cell_ids=False)\
+      .set_table_styles([{'selector': 'td', 'props': props},
+                         {'selector': '.col1', 'props': 'color:green;'},
+                         {'selector': '.level0', 'props': 'color:blue;'}])\
+      .render()\
+      .replace('blank', '')\
+      .replace('data', '')\
+      .replace('level0', 'l0')\
+      .replace('col_heading', '')\
+      .replace('row_heading', '')
+
+html = re.sub(r'col[0-9]+', lambda x: x.group().replace('col', 'c'), html)
+html = re.sub(r'row[0-9]+', lambda x: x.group().replace('row', 'r'), html)
+print(html)
+HTML(html)
+```
+
 - https://github.com/plotly/dash-sample-apps/tree/main
 - https://dash-example-index.herokuapp.com/cheatsheet
 - https://dash-example-index.herokuapp.com/
