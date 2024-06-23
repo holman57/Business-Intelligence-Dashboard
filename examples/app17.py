@@ -13,11 +13,10 @@ from plotly.subplots import make_subplots
 # https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
 
 
-print(conn_string)
 ganymede_conn = urllib.parse.quote_plus(conn_string)
 engine = sa.create_engine(f"mssql+pyodbc:///?odbc_connect={ganymede_conn}")
 sql = """
-    SELECT TOP (1000) * 
+    SELECT TOP (100) * 
     FROM [Orders] 
     WHERE [OrderDate] BETWEEN '1997-01-01' AND '1997-12-31'
     ORDER BY NEWID();
