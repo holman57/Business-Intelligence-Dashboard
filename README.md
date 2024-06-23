@@ -1,29 +1,12 @@
 # Dashboard
 
-- https://pandas.pydata.org/pandas-docs/version/1.3.1/user_guide/style.html
-
-```python
-from pandas.io.formats.style import Styler
-from IPython.display import HTML
-import re
-
-html = Styler(df, uuid_len=0, cell_ids=False)\
-      .set_table_styles([{'selector': 'td', 'props': props},
-                         {'selector': '.col1', 'props': 'color:green;'},
-                         {'selector': '.level0', 'props': 'color:blue;'}])\
-      .render()\
-      .replace('blank', '')\
-      .replace('data', '')\
-      .replace('level0', 'l0')\
-      .replace('col_heading', '')\
-      .replace('row_heading', '')
-
-html = re.sub(r'col[0-9]+', lambda x: x.group().replace('col', 'c'), html)
-html = re.sub(r'row[0-9]+', lambda x: x.group().replace('row', 'r'), html)
-print(html)
-HTML(html)
-```
-
+- https://dash.plotly.com/dash-ag-grid/column-filters
+- https://www.ag-grid.com/javascript-data-grid/grid-options/
+- https://dash.plotly.com/dash-ag-grid/grid-size
+- https://community.plotly.com/t/drop-down-with-checkboxes/21549
+- https://dash.plotly.com/pattern-matching-callbacks
+- https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
+- https://pandas.pydata.org/docs/user_guide/timeseries.html#timeseries-offset-aliases
 - https://github.com/plotly/dash-sample-apps/tree/main
 - https://dash-example-index.herokuapp.com/cheatsheet
 - https://dash-example-index.herokuapp.com/
@@ -83,7 +66,7 @@ def hello():
 
 @server.route('/dashboard')
 def render_dashboard():
-    return flask.redirect('/dash1')
+    return flask.redire+ct('/dash1')
 
 
 @server.route('/reports')
@@ -96,4 +79,28 @@ app = DispatcherMiddleware(server, {
 })
 
 run_simple('0.0.0.0', 8080, app, use_reloader=True, use_debugger=True)
+```
+
+- https://pandas.pydata.org/pandas-docs/version/1.3.1/user_guide/style.html
+
+```python
+from pandas.io.formats.style import Styler
+from IPython.display import HTML
+import re
+
+html = Styler(df, uuid_len=0, cell_ids=False)\
+      .set_table_styles([{'selector': 'td', 'props': props},
+                         {'selector': '.col1', 'props': 'color:green;'},
+                         {'selector': '.level0', 'props': 'color:blue;'}])\
+      .render()\
+      .replace('blank', '')\
+      .replace('data', '')\
+      .replace('level0', 'l0')\
+      .replace('col_heading', '')\
+      .replace('row_heading', '')
+
+html = re.sub(r'col[0-9]+', lambda x: x.group().replace('col', 'c'), html)
+html = re.sub(r'row[0-9]+', lambda x: x.group().replace('row', 'r'), html)
+print(html)
+HTML(html)
 ```
